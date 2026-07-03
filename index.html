@@ -131,14 +131,20 @@
     {nombre:"Facebook", formato:"16:9", w:1200, h:630, fs:48, rs:38, bs:28},
     {nombre:"Twitter / X", formato:"16:9", w:1200, h:675, fs:48, rs:38, bs:28}
   ];
-  // ⚠️ Playlists de EJEMPLO — reemplazá por música cristiana instrumental real.
+  // IDs de videos de YouTube (música cristiana instrumental para orar). Cambiá cualquiera
+  // por otro pegando solo el código que va después de "watch?v=" en el link de YouTube.
   var PLAYLISTS = {
-    calma:     "https://www.youtube.com/embed/videoseries?list=PLx65qkgCWNJIgq1xhH4SZIZqMGxlLdRtP",
-    esperanza: "https://www.youtube.com/embed/videoseries?list=PLEzuCmCsGHjRxkJGGrNVrqWDM8RY5dSiM",
-    fortaleza: "https://www.youtube.com/embed/videoseries?list=PLw-YMqXFW6hiF2YEXfSBxkKVGDKH8JoRJ",
-    alabanza:  "https://www.youtube.com/embed/videoseries?list=PLhT9MQxkBJ5bqIQNxNJ95mpxpxNKN7j3P",
-    duelo:     "https://www.youtube.com/embed/videoseries?list=PL9pxZDdiTDWxK6v3NeX97LAflqzOtHKpd"
+    calma:     "1lRSF-U0v64",  // 1 hora instrumental para orar
+    esperanza: "rDsR6XsGZds",  // instrumental para relajación y orar
+    fortaleza: "3lTSQd62bvw",  // instrumental cristiano para orar
+    alabanza:  "dzB9LdTfXsA",  // piano para orar y meditar
+    duelo:     "ZUczVAyaNn4"   // Purifícame - piano para orar
   };
+  // Construye la URL del reproductor. loop=1 + playlist=ID hace que el video se repita solo.
+  function srcMusica(tema, autoplay){
+    var id = PLAYLISTS[tema] || PLAYLISTS.calma;
+    return "https://www.youtube.com/embed/" + id + "?rel=0&loop=1&playlist=" + id + (autoplay ? "&autoplay=1" : "");
+  }
   var TEMA_LABEL = { calma:"Calma", esperanza:"Esperanza", fortaleza:"Fortaleza", alabanza:"Alabanza", duelo:"Consuelo" };
 
   function el(html){ var d=document.createElement("div"); d.innerHTML=html.trim(); return d.firstChild; }
@@ -293,8 +299,8 @@
       + (data.introduccion ? '<p class="intro">'+esc(data.introduccion)+'</p>' : '')
       + citasHtml
       + (data.oracion ? '<div class="oracion"><div class="oracion-label">Oración de cierre</div><p class="oracion-text">'+esc(data.oracion)+'</p></div>' : '')
-      + '<div class="music"><div class="music-bar"><span>🎵 Música: '+esc(TEMA_LABEL[tema]||"Calma")+'</span><button class="mini" style="flex:0 0 auto" id="mtoggle">Pausar</button></div>'
-      +   '<iframe id="miframe" allow="autoplay; encrypted-media" src="'+PLAYLISTS[tema]+'&autoplay=1&loop=1"></iframe></div>'
+      + '<div class="music"><div class="music-bar"><span>🎵 Música para acompañarte</span><button class="mini" style="flex:0 0 auto" id="mtoggle">▶ Reproducir</button></div>'
+      +   '<iframe id="miframe" allow="autoplay; encrypted-media" src="'+srcMusica(tema,false)+'"></iframe></div>'
       + '<button class="btn btn-ghost" id="volver">← Buscar otra situación</button>'
       + '</div>');
     app.appendChild(v);
@@ -303,11 +309,11 @@
     v.querySelectorAll("[data-share]").forEach(function(b){ b.onclick=function(){ abrirModal(citas[+b.getAttribute("data-share")]); }; });
     v.querySelectorAll("[data-wa]").forEach(function(b){ b.onclick=function(){ compartirWhatsApp(citas[+b.getAttribute("data-wa")]); }; });
 
-    var iframe=v.querySelector("#miframe"), toggle=v.querySelector("#mtoggle"), on=true;
+    var iframe=v.querySelector("#miframe"), toggle=v.querySelector("#mtoggle"), on=false;
     toggle.onclick=function(){
       on=!on;
-      if (on){ iframe.style.display="block"; iframe.src=PLAYLISTS[tema]+"&autoplay=1&loop=1"; toggle.textContent="Pausar"; }
-      else { iframe.src="about:blank"; iframe.style.display="none"; toggle.textContent="Reproducir"; }
+      if (on){ iframe.style.display="block"; iframe.src=srcMusica(tema,true); toggle.textContent="⏸ Pausar"; }
+      else { iframe.src="about:blank"; iframe.style.display="none"; toggle.textContent="▶ Reproducir"; }
     };
     v.querySelector("#volver").onclick=function(){ renderHome(); };
   }
