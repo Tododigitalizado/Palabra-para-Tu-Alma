@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Palabra para Tu Alma</title>
+<meta name="description" content="Un versículo bíblico para cada momento del corazón.">
+<style>
+  :root { --dorado:#d4aa50; --dorado-claro:#e8c877; --crema:#f5e6c8; --crema-tenue:#c9b89a; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { font-family: Georgia, "Times New Roman", serif; color: var(--crema); background: #100803; }
+  .root {
+    min-height: 100vh;
+    background:
+      radial-gradient(ellipse at 50% -10%, rgba(212,170,80,0.16), transparent 55%),
+      radial-gradient(ellipse at 50% 120%, rgba(120,70,20,0.20), transparent 55%),
+      linear-gradient(180deg, #170d05 0%, #100803 100%);
+    padding: 0 18px calc(64px + env(safe-area-inset-bottom));
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 600px; margin: 0 auto; }
+  .fadein { animation: fade 0.85s ease both; }
+  @keyframes fade { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .fadein { animation: none; } }
+
+  header { text-align: center; padding: 30px 0 10px; }
+  .cross { color: var(--dorado); font-size: 30px; opacity: 0.85; }
+  h1 { font-size: clamp(30px, 8vw, 44px); margin: 6px 0 2px; color: var(--crema); font-weight: normal; letter-spacing: 0.5px; }
+  .sub { color: var(--crema-tenue); font-style: italic; font-size: 15px; margin: 0; }
+  .rule { height: 1px; background: linear-gradient(90deg, transparent, var(--dorado), transparent); margin: 22px 0; opacity: 0.55; }
+
+  .daily { border: 1px solid rgba(212,170,80,0.4); border-radius: 14px; background: linear-gradient(180deg, rgba(212,170,80,0.10), rgba(212,170,80,0.03)); padding: 20px 22px; text-align: center; margin: 8px 0 4px; }
+  .daily-label { color: var(--dorado); text-transform: uppercase; letter-spacing: 3px; font-size: 11px; }
+  .daily-text { font-style: italic; font-size: 18px; line-height: 1.6; margin: 12px 0 8px; color: var(--crema); }
+  .daily-ref { color: var(--dorado-claro); font-weight: bold; font-size: 15px; }
+
+  .ask { text-align: center; color: var(--crema); font-size: 20px; margin: 28px 0 16px; font-weight: normal; }
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  @media (min-width: 470px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+  .mood { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 16px 10px; border-radius: 14px; cursor: pointer; border: 1px solid rgba(212,170,80,0.28); background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(0,0,0,0.15)); color: var(--crema); font-family: inherit; font-size: 13px; text-align: center; transition: transform 0.15s, border-color 0.15s, background 0.15s; }
+  .mood:active { transform: scale(0.97); border-color: var(--dorado); background: rgba(212,170,80,0.14); }
+  .mood-emoji { font-size: 28px; }
+
+  .free { margin-top: 20px; }
+  textarea { width: 100%; min-height: 78px; resize: vertical; padding: 14px 16px; border-radius: 12px; border: 1px solid rgba(212,170,80,0.32); background: rgba(0,0,0,0.25); color: var(--crema); font-family: inherit; font-size: 16px; }
+  textarea::placeholder { color: var(--crema-tenue); font-style: italic; }
+  textarea:focus { outline: none; border-color: var(--dorado); }
+
+  .btn { display: block; width: 100%; margin-top: 12px; padding: 15px 20px; border-radius: 12px; border: none; cursor: pointer; background: linear-gradient(180deg, var(--dorado-claro), var(--dorado)); color: #2a1600; font-family: inherit; font-size: 16px; font-weight: bold; letter-spacing: 0.3px; }
+  .btn:active { transform: scale(0.99); }
+  .btn:disabled { opacity: 0.5; }
+  .btn-ghost { background: transparent; border: 1px solid rgba(212,170,80,0.5); color: var(--dorado-claro); }
+
+  .landing { text-align: center; padding-top: 34px; }
+  .lead { color: var(--crema-tenue); font-size: 17px; line-height: 1.7; margin: 18px auto 26px; max-width: 460px; }
+
+  .loading { text-align: center; padding: 70px 0; }
+  .loading .cross { font-size: 46px; animation: pulse 1.4s ease-in-out infinite; display: inline-block; }
+  @keyframes pulse { 0%,100% { opacity: 0.4; transform: scale(0.95); } 50% { opacity: 1; transform: scale(1.05); } }
+  .loading p { color: var(--crema-tenue); font-style: italic; margin-top: 16px; }
+
+  .intro { text-align: center; font-style: italic; font-size: 18px; line-height: 1.7; color: var(--crema); margin: 8px 0 6px; }
+  .cita { border: 1px solid rgba(212,170,80,0.26); border-radius: 16px; padding: 22px 22px 18px; margin: 16px 0; background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(0,0,0,0.14)); }
+  .cita-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .cita-ref { color: var(--dorado-claro); font-weight: bold; font-size: 18px; }
+  .badge { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--dorado); border: 1px solid rgba(212,170,80,0.4); border-radius: 999px; padding: 3px 10px; white-space: nowrap; }
+  .cita-text { font-style: italic; font-size: 17px; line-height: 1.65; color: var(--crema); }
+  .cita-refl { color: var(--crema-tenue); font-size: 14px; line-height: 1.6; margin-top: 12px; padding-top: 12px; border-top: 1px dashed rgba(212,170,80,0.25); }
+  .cita-actions { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+  .mini { flex: 1 1 auto; padding: 11px 12px; border-radius: 10px; cursor: pointer; font-family: inherit; font-size: 13px; border: 1px solid rgba(212,170,80,0.4); background: rgba(212,170,80,0.08); color: var(--crema); white-space: nowrap; }
+  .mini:active { background: rgba(212,170,80,0.18); }
+  .wa { border-color: rgba(80,200,120,0.5); color: #baf0c8; background: rgba(60,180,100,0.10); }
+
+  .oracion { text-align: center; border-radius: 16px; padding: 22px; margin: 22px 0; background: rgba(212,170,80,0.06); border: 1px solid rgba(212,170,80,0.3); }
+  .oracion-label { color: var(--dorado); text-transform: uppercase; letter-spacing: 3px; font-size: 11px; }
+  .oracion-text { font-style: italic; font-size: 17px; line-height: 1.7; margin-top: 10px; color: var(--crema); }
+
+  .music { margin: 20px 0; border-radius: 14px; overflow: hidden; border: 1px solid rgba(212,170,80,0.28); background: rgba(0,0,0,0.3); }
+  .music-bar { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; }
+  .music-bar span { color: var(--dorado-claro); font-size: 14px; }
+  .music iframe { width: 100%; height: 80px; border: none; display: block; }
+
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 50; }
+  .modal { background: linear-gradient(180deg, #241408, #170d05); border: 1px solid rgba(212,170,80,0.4); border-radius: 18px; padding: 24px; max-width: 420px; width: 100%; }
+  .modal h3 { text-align: center; color: var(--crema); font-weight: normal; margin: 0 0 4px; }
+  .modal p { text-align: center; color: var(--crema-tenue); font-size: 13px; margin: 0 0 18px; }
+  .redes { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .red { padding: 14px 10px; border-radius: 12px; cursor: pointer; font-family: inherit; text-align: center; border: 1px solid rgba(212,170,80,0.35); background: rgba(212,170,80,0.06); color: var(--crema); }
+  .red:active { background: rgba(212,170,80,0.16); }
+  .red b { display: block; font-size: 14px; }
+  .red small { color: var(--crema-tenue); font-size: 11px; }
+
+  .error { text-align: center; color: #f0b8a8; background: rgba(180,60,40,0.15); border: 1px solid rgba(180,60,40,0.4); border-radius: 12px; padding: 16px; margin: 16px 0; font-size: 14px; line-height: 1.5; }
+  footer { text-align: center; color: var(--crema-tenue); font-size: 12px; margin-top: 34px; line-height: 1.6; }
+</style>
+</head>
+<body>
+<div class="root">
+  <div class="wrap">
+    <header>
+      <div class="cross">✝</div>
+      <h1>Palabra para Tu Alma</h1>
+      <p class="sub">Un versículo para cada momento del corazón</p>
+    </header>
+    <div id="app"></div>
+    <footer>
+      ✝ Palabra para Tu Alma · Reina-Valera 1960<br>
+      Los versículos son generados por IA; verificá siempre contra tu Biblia.
+    </footer>
+  </div>
+</div>
+<div id="modal-root"></div>
+
+<script>
+(function () {
+  var app = document.getElementById("app");
+  var modalRoot = document.getElementById("modal-root");
+  var versiculoDia = null;
+
+  var MOODS = [
+    ["😰","Ansiedad"],["😨","Miedo"],["💪","Necesito fortaleza"],["🌅","Sin esperanza"],
+    ["☮️","Sin paz interior"],["💔","Pérdida de un ser querido"],["🌧️","Tristeza / Depresión"],
+    ["🤒","Enfermedad"],["🛡️","Necesito protección"],["🫂","Soledad"],["💼","Sin trabajo"],
+    ["💸","Sin dinero / Deudas"],["😡","Enojo / Ira"],["❓","Dudas en la fe"],
+    ["👨‍👩‍👧","Problemas familiares"],["🌀","Sin propósito / Vacío existencial"]
+  ];
+  var REDES = [
+    {nombre:"Instagram Post", formato:"1:1", w:1080, h:1080, fs:60, rs:46, bs:34},
+    {nombre:"Story / TikTok", formato:"9:16", w:1080, h:1920, fs:66, rs:50, bs:36},
+    {nombre:"Facebook", formato:"16:9", w:1200, h:630, fs:48, rs:38, bs:28},
+    {nombre:"Twitter / X", formato:"16:9", w:1200, h:675, fs:48, rs:38, bs:28}
+  ];
+  // ⚠️ Playlists de EJEMPLO — reemplazá por música cristiana instrumental real.
+  var PLAYLISTS = {
+    calma:     "https://www.youtube.com/embed/videoseries?list=PLx65qkgCWNJIgq1xhH4SZIZqMGxlLdRtP",
+    esperanza: "https://www.youtube.com/embed/videoseries?list=PLEzuCmCsGHjRxkJGGrNVrqWDM8RY5dSiM",
+    fortaleza: "https://www.youtube.com/embed/videoseries?list=PLw-YMqXFW6hiF2YEXfSBxkKVGDKH8JoRJ",
+    alabanza:  "https://www.youtube.com/embed/videoseries?list=PLhT9MQxkBJ5bqIQNxNJ95mpxpxNKN7j3P",
+    duelo:     "https://www.youtube.com/embed/videoseries?list=PL9pxZDdiTDWxK6v3NeX97LAflqzOtHKpd"
+  };
+  var TEMA_LABEL = { calma:"Calma", esperanza:"Esperanza", fortaleza:"Fortaleza", alabanza:"Alabanza", duelo:"Consuelo" };
+
+  function el(html){ var d=document.createElement("div"); d.innerHTML=html.trim(); return d.firstChild; }
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
+  function scrollTop(){ window.scrollTo({top:0, behavior:"smooth"}); }
+
+  /* ---------- Llamadas al BACKEND (la key vive en el servidor) ---------- */
+  function fetchCitas(situacion){
+    return fetch("/api/citas", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ situacion: situacion })
+    }).then(function(r){
+      if (!r.ok) return r.json().then(function(j){ throw new Error(j.error || ("HTTP "+r.status)); });
+      return r.json();
+    });
+  }
+  function fetchVersiculoDelDia(){
+    return fetch("/api/versiculo").then(function(r){
+      if (!r.ok) throw new Error("HTTP "+r.status);
+      return r.json();
+    });
+  }
+
+  /* ---------- Canvas + WhatsApp ---------- */
+  function wrapText(ctx, text, maxWidth){
+    var words=text.split(" "), lines=[], line="";
+    for (var i=0;i<words.length;i++){
+      var test = line ? line+" "+words[i] : words[i];
+      if (ctx.measureText(test).width>maxWidth && line){ lines.push(line); line=words[i]; }
+      else line=test;
+    }
+    if (line) lines.push(line);
+    return lines;
+  }
+  function generarImagen(cita, red){
+    var c=document.createElement("canvas"); c.width=red.w; c.height=red.h;
+    var ctx=c.getContext("2d"), W=c.width, H=c.height;
+    var g=ctx.createLinearGradient(0,0,W,H);
+    g.addColorStop(0,"#1a0a00"); g.addColorStop(0.5,"#2d1500"); g.addColorStop(1,"#140800");
+    ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle="rgba(212,170,80,0.5)"; ctx.lineWidth=Math.max(2,W*0.004);
+    var m=W*0.05; ctx.strokeRect(m,m,W-m*2,H-m*2);
+    ctx.textAlign="center";
+    ctx.fillStyle="#d4aa50"; ctx.font=(red.fs*1.1)+"px Georgia"; ctx.fillText("✝",W/2,H*0.18);
+    ctx.fillStyle="#f5e6c8"; ctx.font="italic "+red.fs+"px Georgia";
+    var lines=wrapText(ctx,'"'+cita.texto+'"',W*0.8);
+    var lh=red.fs*1.35, block=lines.length*lh, y=H/2-block/2;
+    for (var i=0;i<lines.length;i++){ ctx.fillText(lines[i],W/2,y); y+=lh; }
+    ctx.fillStyle="#d4aa50"; ctx.font="bold "+red.rs+"px Georgia";
+    ctx.fillText("— "+cita.versiculo, W/2, y+red.rs*1.4);
+    ctx.fillStyle="rgba(212,170,80,0.5)"; ctx.font=red.bs+"px Georgia";
+    ctx.fillText("✝ Palabra para Tu Alma", W/2, H-H*0.06);
+    var a=document.createElement("a");
+    a.download="cita-"+cita.versiculo.replace(/[^a-z0-9]/gi,"_")+".png";
+    a.href=c.toDataURL("image/png"); a.click();
+  }
+  function compartirWhatsApp(cita){
+    var t="✝️ *"+cita.versiculo+"*\n\n_\""+cita.texto+"\"_\n\n💡 "+cita.refleccion+"\n\n📖 _Palabra para Tu Alma_";
+    window.open("https://wa.me/?text="+encodeURIComponent(t), "_blank");
+  }
+
+  /* ---------- Vistas ---------- */
+  function renderLanding(){
+    app.innerHTML="";
+    var v=el('<div class="landing fadein"><div class="rule"></div>'
+      + '<p class="lead">Contanos cómo te sentís y recibí cinco versículos —del Antiguo y del Nuevo Testamento— con una reflexión para tu momento, una oración, música para acompañarte y la opción de compartir la Palabra con quien la necesite.</p>'
+      + '<button class="btn" id="empezar">Comenzar gratis</button></div>');
+    app.appendChild(v);
+    v.querySelector("#empezar").onclick = renderHome;
+  }
+
+  function renderHome(errMsg){
+    app.innerHTML="";
+    var moodsHtml = MOODS.map(function(m){
+      return '<button class="mood" data-label="'+esc(m[1])+'"><span class="mood-emoji">'+m[0]+'</span>'+esc(m[1])+'</button>';
+    }).join("");
+
+    var dailyInner = versiculoDia && !versiculoDia.error
+      ? '<p class="daily-text">"'+esc(versiculoDia.texto)+'"</p><div class="daily-ref">— '+esc(versiculoDia.versiculo)+'</div>'
+      : (versiculoDia && versiculoDia.error
+          ? '<p class="daily-text" style="opacity:.7">"Lámpara es a mis pies tu palabra, y lumbrera a mi camino."<br><span class="daily-ref">— Salmos 119:105</span></p>'
+          : '<p class="daily-text" style="opacity:.6">Buscando la palabra de hoy…</p>');
+
+    var v=el('<div class="fadein">'
+      + '<div class="daily"><div class="daily-label">Versículo del día</div><div id="daily-inner">'+dailyInner+'</div></div>'
+      + '<div class="rule"></div>'
+      + '<h2 class="ask">¿Cómo se siente tu alma hoy?</h2>'
+      + (errMsg ? '<div class="error">'+esc(errMsg)+'</div>' : '')
+      + '<div class="grid">'+moodsHtml+'</div>'
+      + '<div class="free"><textarea id="libre" placeholder="Si tu situación no está arriba, contame con tus palabras..."></textarea>'
+      +   '<button class="btn" id="enviar" disabled>Recibir mi palabra</button></div>'
+      + '</div>');
+    app.appendChild(v);
+    scrollTop();
+
+    var moods=v.querySelectorAll(".mood");
+    for (var i=0;i<moods.length;i++){
+      moods[i].onclick=(function(label){ return function(){ buscar(label); }; })(moods[i].getAttribute("data-label"));
+    }
+    var ta=v.querySelector("#libre"), btn=v.querySelector("#enviar");
+    ta.oninput=function(){ btn.disabled=!ta.value.trim(); };
+    btn.onclick=function(){ if(ta.value.trim()) buscar(ta.value.trim()); };
+
+    if (!versiculoDia){
+      fetchVersiculoDelDia().then(function(d){
+        versiculoDia=d;
+        var inner=document.getElementById("daily-inner");
+        if (inner) inner.innerHTML='<p class="daily-text">"'+esc(d.texto)+'"</p><div class="daily-ref">— '+esc(d.versiculo)+'</div>';
+      }).catch(function(){
+        versiculoDia={error:true};
+        var inner=document.getElementById("daily-inner");
+        if (inner) inner.innerHTML='<p class="daily-text" style="opacity:.7">"Lámpara es a mis pies tu palabra, y lumbrera a mi camino."<br><span class="daily-ref">— Salmos 119:105</span></p>';
+      });
+    }
+  }
+
+  function renderLoading(){
+    app.innerHTML="";
+    app.appendChild(el('<div class="loading fadein"><div class="cross">✝</div><p>Buscando la palabra para tu alma…</p></div>'));
+    scrollTop();
+  }
+
+  function buscar(situacion){
+    renderLoading();
+    fetchCitas(situacion).then(function(data){
+      renderResultados(data);
+    }).catch(function(e){
+      console.error(e);
+      renderHome("No pudimos recibir la palabra ahora. Intentá de nuevo en un momento.");
+    });
+  }
+
+  function renderResultados(data){
+    app.innerHTML="";
+    var citas = Array.isArray(data.citas) ? data.citas : [];
+    var tema = (data.playlist_tema && PLAYLISTS[data.playlist_tema]) ? data.playlist_tema : "calma";
+
+    var citasHtml = citas.map(function(c, idx){
+      return '<article class="cita">'
+        + '<div class="cita-top"><span class="cita-ref">'+esc(c.versiculo)+'</span><span class="badge">'+esc(c.testamento)+' Testamento</span></div>'
+        + '<p class="cita-text">"'+esc(c.texto)+'"</p>'
+        + (c.refleccion ? '<p class="cita-refl">💡 '+esc(c.refleccion)+'</p>' : '')
+        + '<div class="cita-actions">'
+        +   '<button class="mini" data-share="'+idx+'">📤 Compartir esta cita</button>'
+        +   '<button class="mini wa" data-wa="'+idx+'">💚 Regalar por WhatsApp</button>'
+        + '</div></article>';
+    }).join("");
+
+    var v=el('<div class="fadein">'
+      + '<div class="rule"></div>'
+      + (data.introduccion ? '<p class="intro">'+esc(data.introduccion)+'</p>' : '')
+      + citasHtml
+      + (data.oracion ? '<div class="oracion"><div class="oracion-label">Oración de cierre</div><p class="oracion-text">'+esc(data.oracion)+'</p></div>' : '')
+      + '<div class="music"><div class="music-bar"><span>🎵 Música: '+esc(TEMA_LABEL[tema]||"Calma")+'</span><button class="mini" style="flex:0 0 auto" id="mtoggle">Pausar</button></div>'
+      +   '<iframe id="miframe" allow="autoplay; encrypted-media" src="'+PLAYLISTS[tema]+'&autoplay=1&loop=1"></iframe></div>'
+      + '<button class="btn btn-ghost" id="volver">← Buscar otra situación</button>'
+      + '</div>');
+    app.appendChild(v);
+    scrollTop();
+
+    v.querySelectorAll("[data-share]").forEach(function(b){ b.onclick=function(){ abrirModal(citas[+b.getAttribute("data-share")]); }; });
+    v.querySelectorAll("[data-wa]").forEach(function(b){ b.onclick=function(){ compartirWhatsApp(citas[+b.getAttribute("data-wa")]); }; });
+
+    var iframe=v.querySelector("#miframe"), toggle=v.querySelector("#mtoggle"), on=true;
+    toggle.onclick=function(){
+      on=!on;
+      if (on){ iframe.style.display="block"; iframe.src=PLAYLISTS[tema]+"&autoplay=1&loop=1"; toggle.textContent="Pausar"; }
+      else { iframe.src="about:blank"; iframe.style.display="none"; toggle.textContent="Reproducir"; }
+    };
+    v.querySelector("#volver").onclick=function(){ renderHome(); };
+  }
+
+  function abrirModal(cita){
+    var redesHtml=REDES.map(function(r,i){
+      return '<button class="red" data-red="'+i+'"><b>'+esc(r.nombre)+'</b><small>'+esc(r.formato)+'</small></button>';
+    }).join("");
+    var ov=el('<div class="overlay"><div class="modal"><h3>Compartir esta cita</h3><p>Elegí el formato para tu red social</p>'
+      + '<div class="redes">'+redesHtml+'</div>'
+      + '<button class="btn btn-ghost" style="margin-top:16px" id="cancelar">Cancelar</button></div></div>');
+    modalRoot.appendChild(ov);
+    function cerrar(){ modalRoot.innerHTML=""; }
+    ov.onclick=function(e){ if(e.target===ov) cerrar(); };
+    ov.querySelector("#cancelar").onclick=cerrar;
+    ov.querySelectorAll("[data-red]").forEach(function(b){
+      b.onclick=function(){ generarImagen(cita, REDES[+b.getAttribute("data-red")]); cerrar(); };
+    });
+  }
+
+  renderLanding();
+})();
+</script>
+</body>
+</html>

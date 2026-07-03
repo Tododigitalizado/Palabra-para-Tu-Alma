@@ -1,0 +1,7 @@
+{
+  "name": "palabra-para-tu-alma",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "App de citas biblicas segun el estado de animo (frontend + backend serverless en Vercel)."
+}
