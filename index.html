@@ -5,108 +5,243 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Palabra para Tu Alma</title>
 <meta name="description" content="Un versículo bíblico para cada momento del corazón.">
+<meta name="theme-color" content="#0c0a08">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
-  :root { --dorado:#d4aa50; --dorado-claro:#e8c877; --crema:#f5e6c8; --crema-tenue:#c9b89a; }
+  :root {
+    --obsidian:#0c0a08; --obsidian-2:#151009; --panel:#1a1209;
+    --gold:#d9b46a; --gold-bright:#f2dca2; --gold-deep:#a6803f;
+    --cream:#f4ead7; --cream-dim:#b6a684; --cream-faint:#8a7c60;
+    --wa:#7fe0a0;
+    --edge:rgba(217,180,106,0.22);
+    --edge-soft:rgba(217,180,106,0.14);
+    --serif-display:"Cormorant Garamond", Georgia, serif;
+    --serif-body:"EB Garamond", Georgia, serif;
+  }
   * { box-sizing: border-box; }
   html, body { margin: 0; }
-  body { font-family: Georgia, "Times New Roman", serif; color: var(--crema); background: #100803; }
-  .root {
-    min-height: 100vh;
-    background:
-      radial-gradient(ellipse at 50% -10%, rgba(212,170,80,0.16), transparent 55%),
-      radial-gradient(ellipse at 50% 120%, rgba(120,70,20,0.20), transparent 55%),
-      linear-gradient(180deg, #170d05 0%, #100803 100%);
-    padding: 0 18px calc(64px + env(safe-area-inset-bottom));
+  body {
+    font-family: var(--serif-body);
+    color: var(--cream);
+    background: var(--obsidian);
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
-  .wrap { max-width: 600px; margin: 0 auto; }
-  .fadein { animation: fade 0.85s ease both; }
-  @keyframes fade { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
-  @media (prefers-reduced-motion: reduce) { .fadein { animation: none; } }
 
-  header { text-align: center; padding: 30px 0 10px; }
-  .cross { color: var(--dorado); font-size: 30px; opacity: 0.85; }
-  h1 { font-size: clamp(30px, 8vw, 44px); margin: 6px 0 2px; color: var(--crema); font-weight: normal; letter-spacing: 0.5px; }
-  .sub { color: var(--crema-tenue); font-style: italic; font-size: 15px; margin: 0; }
-  .rule { height: 1px; background: linear-gradient(90deg, transparent, var(--dorado), transparent); margin: 22px 0; opacity: 0.55; }
+  /* ---------- Fondo atmosférico ---------- */
+  .bg { position: fixed; inset: 0; z-index: -3; overflow: hidden;
+    background:
+      radial-gradient(ellipse 90% 55% at 50% -8%, rgba(217,180,106,0.20), transparent 60%),
+      radial-gradient(ellipse 70% 45% at 50% 112%, rgba(150,90,30,0.18), transparent 60%),
+      linear-gradient(180deg, #120c06 0%, var(--obsidian) 55%, #0a0705 100%);
+  }
+  .bg::after { /* halo que respira */
+    content:""; position:absolute; left:50%; top:-6%; width:min(560px,120vw); aspect-ratio:1; transform:translateX(-50%);
+    background: radial-gradient(circle, rgba(217,180,106,0.16), transparent 65%);
+    filter: blur(10px); animation: breathe 9s ease-in-out infinite;
+  }
+  @keyframes breathe { 0%,100%{opacity:.55; transform:translateX(-50%) scale(1);} 50%{opacity:1; transform:translateX(-50%) scale(1.08);} }
+  .grain { position: fixed; inset: 0; z-index: -2; pointer-events:none; opacity:0.05; mix-blend-mode: soft-light;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  .motes { position: fixed; inset: 0; z-index: -1; pointer-events:none; overflow:hidden; }
+  .mote { position:absolute; bottom:-12px; width:4px; height:4px; border-radius:50%;
+    background: radial-gradient(circle, var(--gold-bright), rgba(217,180,106,0));
+    opacity:0; animation: drift linear infinite; }
+  @keyframes drift {
+    0% { transform: translateY(0) scale(.6); opacity:0; }
+    12% { opacity:.9; }
+    88% { opacity:.7; }
+    100% { transform: translateY(-104vh) scale(1.1); opacity:0; }
+  }
 
-  .daily { border: 1px solid rgba(212,170,80,0.4); border-radius: 14px; background: linear-gradient(180deg, rgba(212,170,80,0.10), rgba(212,170,80,0.03)); padding: 20px 22px; text-align: center; margin: 8px 0 4px; }
-  .daily-label { color: var(--dorado); text-transform: uppercase; letter-spacing: 3px; font-size: 11px; }
-  .daily-text { font-style: italic; font-size: 18px; line-height: 1.6; margin: 12px 0 8px; color: var(--crema); }
-  .daily-ref { color: var(--dorado-claro); font-weight: bold; font-size: 15px; }
+  /* ---------- Layout ---------- */
+  .root { min-height: 100vh; padding: 0 20px calc(120px + env(safe-area-inset-bottom)); }
+  .wrap { max-width: 620px; margin: 0 auto; }
 
-  .ask { text-align: center; color: var(--crema); font-size: 20px; margin: 28px 0 16px; font-weight: normal; }
-  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-  @media (min-width: 470px) { .grid { grid-template-columns: repeat(3, 1fr); } }
-  .mood { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 16px 10px; border-radius: 14px; cursor: pointer; border: 1px solid rgba(212,170,80,0.28); background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(0,0,0,0.15)); color: var(--crema); font-family: inherit; font-size: 13px; text-align: center; transition: transform 0.15s, border-color 0.15s, background 0.15s; }
-  .mood:active { transform: scale(0.97); border-color: var(--dorado); background: rgba(212,170,80,0.14); }
-  .mood-emoji { font-size: 28px; }
+  header { text-align: center; padding: 46px 0 6px; }
+  .cross { font-size: 30px; color: var(--gold); opacity: .9;
+    text-shadow: 0 0 22px rgba(217,180,106,0.55); animation: glow 5s ease-in-out infinite; }
+  @keyframes glow { 0%,100%{opacity:.7; text-shadow:0 0 16px rgba(217,180,106,.35);} 50%{opacity:1; text-shadow:0 0 30px rgba(217,180,106,.7);} }
+  h1.brand { font-family: var(--serif-display); font-weight: 600;
+    font-size: clamp(38px, 11vw, 60px); line-height: 1.02; margin: 10px 0 4px;
+    letter-spacing: 0.5px; text-wrap: balance;
+    background: linear-gradient(100deg, var(--gold-deep) 0%, var(--gold-bright) 28%, var(--cream) 50%, var(--gold-bright) 72%, var(--gold-deep) 100%);
+    background-size: 220% auto; -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: shimmer 9s linear infinite; }
+  @keyframes shimmer { to { background-position: 220% center; } }
+  .sub { color: var(--cream-dim); font-style: italic; font-size: clamp(15px,4vw,18px); margin: 0; letter-spacing:.3px; }
+  .flourish { display:flex; align-items:center; justify-content:center; gap:14px; margin: 16px auto 2px; color: var(--gold-deep); }
+  .flourish::before, .flourish::after { content:""; height:1px; width:60px;
+    background: linear-gradient(90deg, transparent, var(--gold)); }
+  .flourish::after { background: linear-gradient(90deg, var(--gold), transparent); }
+  .flourish span { font-size: 13px; }
 
-  .free { margin-top: 20px; }
-  textarea { width: 100%; min-height: 78px; resize: vertical; padding: 14px 16px; border-radius: 12px; border: 1px solid rgba(212,170,80,0.32); background: rgba(0,0,0,0.25); color: var(--crema); font-family: inherit; font-size: 16px; }
-  textarea::placeholder { color: var(--crema-tenue); font-style: italic; }
-  textarea:focus { outline: none; border-color: var(--dorado); }
+  .rule { height:1px; margin: 26px 0; background: linear-gradient(90deg, transparent, var(--edge), transparent); }
 
-  .btn { display: block; width: 100%; margin-top: 12px; padding: 15px 20px; border-radius: 12px; border: none; cursor: pointer; background: linear-gradient(180deg, var(--dorado-claro), var(--dorado)); color: #2a1600; font-family: inherit; font-size: 16px; font-weight: bold; letter-spacing: 0.3px; }
-  .btn:active { transform: scale(0.99); }
-  .btn:disabled { opacity: 0.5; }
-  .btn-ghost { background: transparent; border: 1px solid rgba(212,170,80,0.5); color: var(--dorado-claro); }
+  /* ---------- Reveals escalonados ---------- */
+  .reveal { opacity:0; animation: rise .9s cubic-bezier(.2,.7,.2,1) both; }
+  @keyframes rise { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform:none; } }
 
-  .landing { text-align: center; padding-top: 34px; }
-  .lead { color: var(--crema-tenue); font-size: 17px; line-height: 1.7; margin: 18px auto 26px; max-width: 460px; }
+  /* ---------- Card base (glass) ---------- */
+  .card { position:relative; border-radius: 18px; border:1px solid var(--edge);
+    background: linear-gradient(158deg, rgba(255,255,255,0.055), rgba(255,255,255,0.012));
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 14px 46px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06); }
 
-  .loading { text-align: center; padding: 70px 0; }
-  .loading .cross { font-size: 46px; animation: pulse 1.4s ease-in-out infinite; display: inline-block; }
-  @keyframes pulse { 0%,100% { opacity: 0.4; transform: scale(0.95); } 50% { opacity: 1; transform: scale(1.05); } }
-  .loading p { color: var(--crema-tenue); font-style: italic; margin-top: 16px; }
+  /* ---------- Versículo del día ---------- */
+  .daily { padding: 26px 24px; text-align: center; overflow:hidden; }
+  .daily::before { content:""; position:absolute; inset:0; border-radius:18px; padding:1px;
+    background: linear-gradient(160deg, rgba(242,220,162,0.5), transparent 45%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude; pointer-events:none; }
+  .daily-label { color: var(--gold); text-transform: uppercase; letter-spacing: 4px; font-size: 11px; }
+  .daily-text { font-family: var(--serif-display); font-style: italic; font-weight:500;
+    font-size: clamp(20px,5.6vw,25px); line-height: 1.5; margin: 14px 0 8px; color: var(--cream); text-wrap: balance; }
+  .daily-ref { color: var(--gold-bright); font-weight: 600; font-size: 15px; letter-spacing:.5px; }
 
-  .intro { text-align: center; font-style: italic; font-size: 18px; line-height: 1.7; color: var(--crema); margin: 8px 0 6px; }
-  .cita { border: 1px solid rgba(212,170,80,0.26); border-radius: 16px; padding: 22px 22px 18px; margin: 16px 0; background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(0,0,0,0.14)); }
-  .cita-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; }
-  .cita-ref { color: var(--dorado-claro); font-weight: bold; font-size: 18px; }
-  .badge { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--dorado); border: 1px solid rgba(212,170,80,0.4); border-radius: 999px; padding: 3px 10px; white-space: nowrap; }
-  .cita-text { font-style: italic; font-size: 17px; line-height: 1.65; color: var(--crema); }
-  .cita-refl { color: var(--crema-tenue); font-size: 14px; line-height: 1.6; margin-top: 12px; padding-top: 12px; border-top: 1px dashed rgba(212,170,80,0.25); }
-  .cita-actions { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
-  .mini { flex: 1 1 auto; padding: 11px 12px; border-radius: 10px; cursor: pointer; font-family: inherit; font-size: 13px; border: 1px solid rgba(212,170,80,0.4); background: rgba(212,170,80,0.08); color: var(--crema); white-space: nowrap; }
-  .mini:active { background: rgba(212,170,80,0.18); }
-  .wa { border-color: rgba(80,200,120,0.5); color: #baf0c8; background: rgba(60,180,100,0.10); }
+  .ask { font-family: var(--serif-display); font-weight: 500; text-align: center;
+    color: var(--cream); font-size: clamp(24px,6.4vw,30px); margin: 30px 0 20px; text-wrap: balance; }
 
-  .oracion { text-align: center; border-radius: 16px; padding: 22px; margin: 22px 0; background: rgba(212,170,80,0.06); border: 1px solid rgba(212,170,80,0.3); }
-  .oracion-label { color: var(--dorado); text-transform: uppercase; letter-spacing: 3px; font-size: 11px; }
-  .oracion-text { font-style: italic; font-size: 17px; line-height: 1.7; margin-top: 10px; color: var(--crema); }
+  /* ---------- Grid de emociones ---------- */
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 13px; }
+  @media (min-width: 480px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+  .mood { position:relative; display: flex; flex-direction: column; align-items: center; gap: 9px;
+    padding: 18px 10px; border-radius: 16px; cursor: pointer; overflow:hidden;
+    border: 1px solid var(--edge-soft); color: var(--cream); font-family: var(--serif-body); font-size: 14px; text-align: center;
+    background: linear-gradient(160deg, rgba(255,255,255,0.04), rgba(0,0,0,0.18));
+    transition: transform .28s cubic-bezier(.2,.7,.2,1), border-color .28s, box-shadow .28s, background .28s; }
+  .mood::before { content:""; position:absolute; inset:-40% 50% auto -40%; height:80%;
+    background: radial-gradient(circle, rgba(217,180,106,0.22), transparent 70%); opacity:0; transition:opacity .3s; }
+  .mood:hover { transform: translateY(-4px); border-color: var(--gold); box-shadow: 0 12px 30px rgba(0,0,0,0.5), 0 0 22px rgba(217,180,106,0.18); background: linear-gradient(160deg, rgba(217,180,106,0.12), rgba(0,0,0,0.15)); }
+  .mood:hover::before { opacity:1; }
+  .mood:active { transform: translateY(-1px) scale(.97); }
+  .mood-emoji { font-size: 30px; transition: transform .3s; filter: drop-shadow(0 3px 8px rgba(0,0,0,.4)); }
+  .mood:hover .mood-emoji { transform: scale(1.16) rotate(-3deg); }
 
-  .music { margin: 20px 0; border-radius: 14px; overflow: hidden; border: 1px solid rgba(212,170,80,0.28); background: rgba(0,0,0,0.3); }
-  .music-bar { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; }
-  .music-bar span { color: var(--dorado-claro); font-size: 14px; }
-  .music iframe { width: 100%; height: 80px; border: none; display: block; }
+  /* ---------- Campo libre + botones ---------- */
+  .free { margin-top: 22px; }
+  textarea { width: 100%; min-height: 84px; resize: vertical; padding: 15px 17px; border-radius: 14px;
+    border: 1px solid var(--edge); background: rgba(0,0,0,0.28); color: var(--cream);
+    font-family: var(--serif-body); font-size: 16px; line-height:1.5; transition: border-color .25s, box-shadow .25s; }
+  textarea::placeholder { color: var(--cream-faint); font-style: italic; }
+  textarea:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(217,180,106,0.14); }
 
-  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 50; }
-  .modal { background: linear-gradient(180deg, #241408, #170d05); border: 1px solid rgba(212,170,80,0.4); border-radius: 18px; padding: 24px; max-width: 420px; width: 100%; }
-  .modal h3 { text-align: center; color: var(--crema); font-weight: normal; margin: 0 0 4px; }
-  .modal p { text-align: center; color: var(--crema-tenue); font-size: 13px; margin: 0 0 18px; }
-  .redes { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-  .red { padding: 14px 10px; border-radius: 12px; cursor: pointer; font-family: inherit; text-align: center; border: 1px solid rgba(212,170,80,0.35); background: rgba(212,170,80,0.06); color: var(--crema); }
-  .red:active { background: rgba(212,170,80,0.16); }
-  .red b { display: block; font-size: 14px; }
-  .red small { color: var(--crema-tenue); font-size: 11px; }
+  .btn { position:relative; display: block; width: 100%; margin-top: 14px; padding: 16px 22px;
+    border-radius: 14px; border: none; cursor: pointer; overflow:hidden;
+    background: linear-gradient(180deg, var(--gold-bright), var(--gold) 55%, var(--gold-deep));
+    color: #2a1a05; font-family: var(--serif-display); font-weight: 700; font-size: 19px; letter-spacing: .4px;
+    box-shadow: 0 10px 26px rgba(166,128,63,0.4), inset 0 1px 0 rgba(255,255,255,0.5);
+    transition: transform .2s, box-shadow .25s; }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 16px 34px rgba(166,128,63,0.5), inset 0 1px 0 rgba(255,255,255,0.6); }
+  .btn:active { transform: translateY(0) scale(.99); }
+  .btn:disabled { opacity: .45; cursor: default; transform:none; box-shadow:none; }
+  .btn::after { content:""; position:absolute; inset:0; background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.45) 50%, transparent 70%); transform: translateX(-130%); }
+  .btn:hover:not(:disabled)::after { animation: sweep .95s ease; }
+  @keyframes sweep { to { transform: translateX(130%); } }
+  .btn-ghost { background: transparent; color: var(--gold-bright); border: 1px solid var(--edge); box-shadow:none; font-weight:600; }
+  .btn-ghost:hover { background: rgba(217,180,106,0.08); box-shadow:none; }
+  .btn-ghost::after { display:none; }
 
-  .error { text-align: center; color: #f0b8a8; background: rgba(180,60,40,0.15); border: 1px solid rgba(180,60,40,0.4); border-radius: 12px; padding: 16px; margin: 16px 0; font-size: 14px; line-height: 1.5; }
-  footer { text-align: center; color: var(--crema-tenue); font-size: 12px; margin-top: 34px; line-height: 1.6; }
+  /* ---------- Landing ---------- */
+  .landing { text-align: center; padding-top: 12px; }
+  .lead { font-family: var(--serif-display); color: var(--cream-dim); font-size: clamp(19px,5vw,23px);
+    line-height: 1.62; margin: 22px auto 30px; max-width: 480px; text-wrap: pretty; }
+  .lead em { color: var(--gold-bright); font-style: italic; }
+
+  /* ---------- Loading ---------- */
+  .loading { text-align: center; padding: 90px 0; }
+  .halo { position: relative; display:inline-flex; align-items:center; justify-content:center; width:90px; height:90px; }
+  .halo .cross { font-size: 44px; animation: glow 3s ease-in-out infinite; }
+  .halo i { position:absolute; inset:0; border-radius:50%; border:1px solid rgba(217,180,106,0.5); animation: ripple 2.6s ease-out infinite; }
+  .halo i:nth-child(2){ animation-delay:.9s; } .halo i:nth-child(3){ animation-delay:1.8s; }
+  @keyframes ripple { 0%{ transform:scale(.5); opacity:.8;} 100%{ transform:scale(1.7); opacity:0; } }
+  .loading p { font-family: var(--serif-display); font-style: italic; color: var(--cream-dim); margin-top: 22px; font-size: 19px; }
+
+  /* ---------- Resultados ---------- */
+  .intro { font-family: var(--serif-display); text-align: center; font-style: italic;
+    font-size: clamp(20px,5.2vw,24px); line-height: 1.6; color: var(--cream); margin: 6px 0 4px; text-wrap: balance; }
+  .cita { padding: 24px 24px 20px; margin: 18px 0; }
+  .cita-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .cita-ref { font-family: var(--serif-display); color: var(--gold-bright); font-weight: 600; font-size: 22px; letter-spacing:.3px; }
+  .badge { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold);
+    border: 1px solid var(--edge); border-radius: 999px; padding: 4px 11px; white-space: nowrap; }
+  .cita-text { font-style: italic; font-size: 19px; line-height: 1.62; color: var(--cream); }
+  .cita-refl { color: var(--cream-dim); font-size: 15px; line-height: 1.62; margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--edge); }
+  .cita-actions { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+  .mini { flex: 1 1 auto; padding: 12px 12px; border-radius: 11px; cursor: pointer; font-family: var(--serif-body);
+    font-size: 14px; border: 1px solid var(--edge); background: rgba(217,180,106,0.07); color: var(--cream);
+    white-space: nowrap; transition: background .2s, transform .15s, border-color .2s; }
+  .mini:hover { background: rgba(217,180,106,0.16); border-color: var(--gold); }
+  .mini:active { transform: scale(.97); }
+  .wa { border-color: rgba(127,224,160,0.45); color: var(--wa); background: rgba(60,180,100,0.10); }
+  .wa:hover { background: rgba(60,180,100,0.2); border-color: var(--wa); }
+
+  .oracion { text-align: center; padding: 26px; margin: 24px 0; }
+  .oracion-label { color: var(--gold); text-transform: uppercase; letter-spacing: 4px; font-size: 11px; }
+  .oracion-text { font-family: var(--serif-display); font-style: italic; font-size: clamp(19px,5vw,23px);
+    line-height: 1.66; margin-top: 12px; color: var(--cream); text-wrap: pretty; }
+
+  /* ---------- Control de música flotante ---------- */
+  .music-pill { position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 40;
+    display: inline-flex; align-items: center; gap: 10px; padding: 11px 16px 11px 13px; border-radius: 999px; cursor: pointer;
+    border: 1px solid var(--edge); color: var(--cream); font-family: var(--serif-body); font-size: 14px;
+    background: linear-gradient(160deg, rgba(30,22,10,0.92), rgba(16,12,6,0.92)); backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06);
+    transition: transform .2s, box-shadow .25s, opacity .4s; opacity:0; transform: translateY(14px); }
+  .music-pill.show { opacity:1; transform:none; }
+  .music-pill:hover { transform: translateY(-2px); box-shadow: 0 14px 36px rgba(0,0,0,0.55), 0 0 20px rgba(217,180,106,0.18); }
+  .music-pill .eq { display:inline-flex; align-items:flex-end; gap:3px; height:16px; }
+  .music-pill .eq i { width:3px; height:5px; border-radius:2px; background: var(--gold-bright); opacity:.85; }
+  .music-pill.playing .eq i { animation: eq .9s ease-in-out infinite; }
+  .music-pill .eq i:nth-child(2){ animation-delay:.2s; } .music-pill .eq i:nth-child(3){ animation-delay:.4s; } .music-pill .eq i:nth-child(4){ animation-delay:.15s; }
+  @keyframes eq { 0%,100%{ height:5px; } 50%{ height:16px; } }
+  .music-pill .mp-label { letter-spacing:.3px; color: var(--cream-dim); }
+  .music-pill.playing .mp-label { color: var(--gold-bright); }
+
+  /* ---------- Modal compartir ---------- */
+  .overlay { position: fixed; inset: 0; background: rgba(6,4,2,0.8); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 60; animation: fadeb .3s ease; }
+  @keyframes fadeb { from{opacity:0;} to{opacity:1;} }
+  .modal { border-radius: 20px; padding: 26px; max-width: 430px; width: 100%; animation: rise .5s cubic-bezier(.2,.7,.2,1) both; }
+  .modal h3 { font-family: var(--serif-display); text-align: center; color: var(--cream); font-weight: 600; font-size: 24px; margin: 0 0 4px; }
+  .modal p { text-align: center; color: var(--cream-dim); font-size: 14px; margin: 0 0 20px; }
+  .redes { display: grid; grid-template-columns: repeat(2, 1fr); gap: 11px; }
+  .red { padding: 15px 10px; border-radius: 13px; cursor: pointer; font-family: var(--serif-body); text-align: center;
+    border: 1px solid var(--edge); background: rgba(217,180,106,0.06); color: var(--cream); transition: background .2s, transform .15s, border-color .2s; }
+  .red:hover { background: rgba(217,180,106,0.15); border-color: var(--gold); }
+  .red:active { transform: scale(.97); }
+  .red b { display: block; font-size: 15px; }
+  .red small { color: var(--cream-dim); font-size: 11px; }
+
+  .error { text-align: center; color: #f2c6b4; background: rgba(180,60,40,0.14); border: 1px solid rgba(180,60,40,0.4);
+    border-radius: 14px; padding: 16px; margin: 16px 0; font-size: 15px; line-height: 1.5; }
+  footer { text-align: center; color: var(--cream-faint); font-size: 12.5px; margin-top: 42px; line-height: 1.7; }
+  footer .fine { opacity:.75; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal, .modal, .overlay { animation: none; opacity:1; transform:none; }
+    .bg::after, .cross, .halo i, .music-pill.playing .eq i, .brand, .mote { animation: none; }
+    .mote { display:none; }
+  }
 </style>
 </head>
 <body>
+<div class="bg"></div>
+<div class="grain"></div>
+<div class="motes" id="motes"></div>
+
 <div class="root">
   <div class="wrap">
     <header>
-      <div class="cross">✝</div>
-      <h1>Palabra para Tu Alma</h1>
-      <p class="sub">Un versículo para cada momento del corazón</p>
+      <div class="cross reveal" style="animation-delay:.02s">✝</div>
+      <h1 class="brand reveal" style="animation-delay:.08s">Palabra para Tu Alma</h1>
+      <p class="sub reveal" style="animation-delay:.16s">Un versículo para cada momento del corazón</p>
     </header>
     <div id="app"></div>
-    <footer>
+    <footer class="reveal" style="animation-delay:.3s">
       ✝ Palabra para Tu Alma · Reina-Valera 1960<br>
-      Los versículos son generados por IA; verificá siempre contra tu Biblia.
+      <span class="fine">Los versículos son generados por IA; verificá siempre contra tu Biblia.</span>
     </footer>
   </div>
 </div>
@@ -131,8 +266,8 @@
     {nombre:"Facebook", formato:"16:9", w:1200, h:630, fs:48, rs:38, bs:28},
     {nombre:"Twitter / X", formato:"16:9", w:1200, h:675, fs:48, rs:38, bs:28}
   ];
-  // IDs de videos de YouTube (música cristiana instrumental para orar). Cambiá cualquiera
-  // por otro pegando solo el código que va después de "watch?v=" en el link de YouTube.
+  // IDs de videos de YouTube (música cristiana instrumental para orar). Para cambiar uno,
+  // pegá el código que va después de "watch?v=" en el link del video.
   var PLAYLISTS = {
     calma:     "1lRSF-U0v64",  // 1 hora instrumental para orar
     esperanza: "rDsR6XsGZds",  // instrumental para relajación y orar
@@ -140,16 +275,60 @@
     alabanza:  "dzB9LdTfXsA",  // piano para orar y meditar
     duelo:     "ZUczVAyaNn4"   // Purifícame - piano para orar
   };
-  // Construye la URL del reproductor. loop=1 + playlist=ID hace que el video se repita solo.
-  function srcMusica(tema, autoplay){
-    var id = PLAYLISTS[tema] || PLAYLISTS.calma;
-    return "https://www.youtube.com/embed/" + id + "?rel=0&loop=1&playlist=" + id + (autoplay ? "&autoplay=1" : "");
-  }
-  var TEMA_LABEL = { calma:"Calma", esperanza:"Esperanza", fortaleza:"Fortaleza", alabanza:"Alabanza", duelo:"Consuelo" };
 
   function el(html){ var d=document.createElement("div"); d.innerHTML=html.trim(); return d.firstChild; }
   function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
   function scrollTop(){ window.scrollTo({top:0, behavior:"smooth"}); }
+
+  /* ---------- Partículas de luz ---------- */
+  (function motes(){
+    var host = document.getElementById("motes");
+    var delays = [0,3,6,9,12,2,7,10]; var lefts=[8,22,38,55,68,80,90,15]; var durs=[16,20,14,22,18,24,17,21]; var sizes=[3,5,4,6,3,5,4,6];
+    for (var i=0;i<8;i++){
+      var m=document.createElement("div"); m.className="mote";
+      m.style.left=lefts[i]+"%"; m.style.width=m.style.height=sizes[i]+"px";
+      m.style.animationDuration=durs[i]+"s"; m.style.animationDelay=(-delays[i])+"s";
+      host.appendChild(m);
+    }
+  })();
+
+  /* ---------- Música: audio persistente + control flotante ---------- */
+  var Musica = (function(){
+    var host, iframe, pill, tema="calma", playing=false, mounted=false;
+    function src(auto){
+      var id = PLAYLISTS[tema] || PLAYLISTS.calma;
+      return "https://www.youtube.com/embed/"+id+"?rel=0&controls=0&modestbranding=1&playsinline=1&loop=1&playlist="+id+(auto?"&autoplay=1":"");
+    }
+    function mount(){
+      if (mounted) return; mounted=true;
+      host=document.createElement("div");
+      host.style.cssText="position:fixed;left:-9999px;top:0;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden;";
+      iframe=document.createElement("iframe");
+      iframe.setAttribute("allow","autoplay; encrypted-media"); iframe.setAttribute("title","Música de fondo");
+      host.appendChild(iframe); document.body.appendChild(host);
+
+      pill=el('<div class="music-pill" role="button" tabindex="0" aria-label="Activar o silenciar música">'
+        +'<span class="eq"><i></i><i></i><i></i><i></i></span><span class="mp-label">Música</span></div>');
+      pill.onclick=toggle;
+      pill.onkeydown=function(e){ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); toggle(); } };
+      document.body.appendChild(pill);
+      requestAnimationFrame(function(){ pill.classList.add("show"); });
+    }
+    function paint(){
+      if(!pill) return;
+      pill.classList.toggle("playing", playing);
+      pill.querySelector(".mp-label").textContent = playing ? "Sonando" : "Reanudar";
+    }
+    function start(){ mount(); if(playing) return; playing=true; iframe.src=src(true); paint(); }
+    function toggle(){
+      mount();
+      if(playing){ playing=false; iframe.src="about:blank"; }
+      else { playing=true; iframe.src=src(true); }
+      paint();
+    }
+    function setTema(t){ if(PLAYLISTS[t]) tema=t; if(playing){ iframe.src=src(true); } }
+    return { start:start, toggle:toggle, setTema:setTema };
+  })();
 
   /* ---------- Llamadas al BACKEND (la key vive en el servidor) ---------- */
   function fetchCitas(situacion){
@@ -184,19 +363,22 @@
     var c=document.createElement("canvas"); c.width=red.w; c.height=red.h;
     var ctx=c.getContext("2d"), W=c.width, H=c.height;
     var g=ctx.createLinearGradient(0,0,W,H);
-    g.addColorStop(0,"#1a0a00"); g.addColorStop(0.5,"#2d1500"); g.addColorStop(1,"#140800");
+    g.addColorStop(0,"#1a0e02"); g.addColorStop(0.5,"#2d1804"); g.addColorStop(1,"#120a02");
     ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
-    ctx.strokeStyle="rgba(212,170,80,0.5)"; ctx.lineWidth=Math.max(2,W*0.004);
+    var rg=ctx.createRadialGradient(W/2,H*0.16,10,W/2,H*0.16,W*0.7);
+    rg.addColorStop(0,"rgba(217,180,106,0.22)"); rg.addColorStop(1,"rgba(217,180,106,0)");
+    ctx.fillStyle=rg; ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle="rgba(217,180,106,0.55)"; ctx.lineWidth=Math.max(2,W*0.004);
     var m=W*0.05; ctx.strokeRect(m,m,W-m*2,H-m*2);
     ctx.textAlign="center";
-    ctx.fillStyle="#d4aa50"; ctx.font=(red.fs*1.1)+"px Georgia"; ctx.fillText("✝",W/2,H*0.18);
-    ctx.fillStyle="#f5e6c8"; ctx.font="italic "+red.fs+"px Georgia";
+    ctx.fillStyle="#e8c877"; ctx.font=(red.fs*1.1)+"px Georgia"; ctx.fillText("✝",W/2,H*0.18);
+    ctx.fillStyle="#f4ead7"; ctx.font="italic "+red.fs+"px Georgia";
     var lines=wrapText(ctx,'"'+cita.texto+'"',W*0.8);
     var lh=red.fs*1.35, block=lines.length*lh, y=H/2-block/2;
     for (var i=0;i<lines.length;i++){ ctx.fillText(lines[i],W/2,y); y+=lh; }
-    ctx.fillStyle="#d4aa50"; ctx.font="bold "+red.rs+"px Georgia";
+    ctx.fillStyle="#e8c877"; ctx.font="bold "+red.rs+"px Georgia";
     ctx.fillText("— "+cita.versiculo, W/2, y+red.rs*1.4);
-    ctx.fillStyle="rgba(212,170,80,0.5)"; ctx.font=red.bs+"px Georgia";
+    ctx.fillStyle="rgba(217,180,106,0.55)"; ctx.font=red.bs+"px Georgia";
     ctx.fillText("✝ Palabra para Tu Alma", W/2, H-H*0.06);
     var a=document.createElement("a");
     a.download="cita-"+cita.versiculo.replace(/[^a-z0-9]/gi,"_")+".png";
@@ -210,17 +392,19 @@
   /* ---------- Vistas ---------- */
   function renderLanding(){
     app.innerHTML="";
-    var v=el('<div class="landing fadein"><div class="rule"></div>'
-      + '<p class="lead">Contanos cómo te sentís y recibí cinco versículos —del Antiguo y del Nuevo Testamento— con una reflexión para tu momento, una oración, música para acompañarte y la opción de compartir la Palabra con quien la necesite.</p>'
-      + '<button class="btn" id="empezar">Comenzar gratis</button></div>');
+    var v=el('<div class="landing">'
+      + '<div class="flourish reveal" style="animation-delay:.22s"><span>✦</span></div>'
+      + '<p class="lead reveal" style="animation-delay:.3s">Contanos cómo se siente tu alma y recibí <em>cinco versículos</em> —del Antiguo y del Nuevo Testamento— con una reflexión para tu momento, una oración, música que te acompaña y la Palabra lista para regalar a quien la necesite.</p>'
+      + '<button class="btn reveal" style="animation-delay:.4s" id="empezar">Comenzar gratis</button></div>');
     app.appendChild(v);
-    v.querySelector("#empezar").onclick = renderHome;
+    v.querySelector("#empezar").onclick = function(){ Musica.start(); renderHome(); };
   }
 
   function renderHome(errMsg){
     app.innerHTML="";
-    var moodsHtml = MOODS.map(function(m){
-      return '<button class="mood" data-label="'+esc(m[1])+'"><span class="mood-emoji">'+m[0]+'</span>'+esc(m[1])+'</button>';
+    var moodsHtml = MOODS.map(function(m, i){
+      var d = (0.24 + i*0.03).toFixed(2);
+      return '<button class="mood reveal" style="animation-delay:'+d+'s" data-label="'+esc(m[1])+'"><span class="mood-emoji">'+m[0]+'</span>'+esc(m[1])+'</button>';
     }).join("");
 
     var dailyInner = versiculoDia && !versiculoDia.error
@@ -229,13 +413,12 @@
           ? '<p class="daily-text" style="opacity:.7">"Lámpara es a mis pies tu palabra, y lumbrera a mi camino."<br><span class="daily-ref">— Salmos 119:105</span></p>'
           : '<p class="daily-text" style="opacity:.6">Buscando la palabra de hoy…</p>');
 
-    var v=el('<div class="fadein">'
-      + '<div class="daily"><div class="daily-label">Versículo del día</div><div id="daily-inner">'+dailyInner+'</div></div>'
-      + '<div class="rule"></div>'
-      + '<h2 class="ask">¿Cómo se siente tu alma hoy?</h2>'
-      + (errMsg ? '<div class="error">'+esc(errMsg)+'</div>' : '')
+    var v=el('<div>'
+      + '<div class="card daily reveal" style="animation-delay:.05s"><div class="daily-label">Versículo del día</div><div id="daily-inner">'+dailyInner+'</div></div>'
+      + '<h2 class="ask reveal" style="animation-delay:.16s">¿Cómo se siente tu alma hoy?</h2>'
+      + (errMsg ? '<div class="error reveal">'+esc(errMsg)+'</div>' : '')
       + '<div class="grid">'+moodsHtml+'</div>'
-      + '<div class="free"><textarea id="libre" placeholder="Si tu situación no está arriba, contame con tus palabras..."></textarea>'
+      + '<div class="free reveal" style="animation-delay:.75s"><textarea id="libre" placeholder="Si tu situación no está arriba, contame con tus palabras..."></textarea>'
       +   '<button class="btn" id="enviar" disabled>Recibir mi palabra</button></div>'
       + '</div>');
     app.appendChild(v);
@@ -243,11 +426,11 @@
 
     var moods=v.querySelectorAll(".mood");
     for (var i=0;i<moods.length;i++){
-      moods[i].onclick=(function(label){ return function(){ buscar(label); }; })(moods[i].getAttribute("data-label"));
+      moods[i].onclick=(function(label){ return function(){ Musica.start(); buscar(label); }; })(moods[i].getAttribute("data-label"));
     }
     var ta=v.querySelector("#libre"), btn=v.querySelector("#enviar");
     ta.oninput=function(){ btn.disabled=!ta.value.trim(); };
-    btn.onclick=function(){ if(ta.value.trim()) buscar(ta.value.trim()); };
+    btn.onclick=function(){ if(ta.value.trim()){ Musica.start(); buscar(ta.value.trim()); } };
 
     if (!versiculoDia){
       fetchVersiculoDelDia().then(function(d){
@@ -264,7 +447,7 @@
 
   function renderLoading(){
     app.innerHTML="";
-    app.appendChild(el('<div class="loading fadein"><div class="cross">✝</div><p>Buscando la palabra para tu alma…</p></div>'));
+    app.appendChild(el('<div class="loading"><div class="halo"><i></i><i></i><i></i><div class="cross">✝</div></div><p>Buscando la palabra para tu alma…</p></div>'));
     scrollTop();
   }
 
@@ -282,9 +465,12 @@
     app.innerHTML="";
     var citas = Array.isArray(data.citas) ? data.citas : [];
     var tema = (data.playlist_tema && PLAYLISTS[data.playlist_tema]) ? data.playlist_tema : "calma";
+    Musica.setTema(tema);
+    Musica.start();
 
     var citasHtml = citas.map(function(c, idx){
-      return '<article class="cita">'
+      var d=(0.12 + idx*0.09).toFixed(2);
+      return '<article class="card cita reveal" style="animation-delay:'+d+'s">'
         + '<div class="cita-top"><span class="cita-ref">'+esc(c.versiculo)+'</span><span class="badge">'+esc(c.testamento)+' Testamento</span></div>'
         + '<p class="cita-text">"'+esc(c.texto)+'"</p>'
         + (c.refleccion ? '<p class="cita-refl">💡 '+esc(c.refleccion)+'</p>' : '')
@@ -294,27 +480,18 @@
         + '</div></article>';
     }).join("");
 
-    var v=el('<div class="fadein">'
-      + '<div class="rule"></div>'
-      + (data.introduccion ? '<p class="intro">'+esc(data.introduccion)+'</p>' : '')
+    var v=el('<div>'
+      + (data.introduccion ? '<p class="intro reveal" style="animation-delay:.04s">'+esc(data.introduccion)+'</p>' : '')
+      + '<div class="rule reveal" style="animation-delay:.06s"></div>'
       + citasHtml
-      + (data.oracion ? '<div class="oracion"><div class="oracion-label">Oración de cierre</div><p class="oracion-text">'+esc(data.oracion)+'</p></div>' : '')
-      + '<div class="music"><div class="music-bar"><span>🎵 Música para acompañarte</span><button class="mini" style="flex:0 0 auto" id="mtoggle">▶ Reproducir</button></div>'
-      +   '<iframe id="miframe" allow="autoplay; encrypted-media" src="'+srcMusica(tema,false)+'"></iframe></div>'
-      + '<button class="btn btn-ghost" id="volver">← Buscar otra situación</button>'
+      + (data.oracion ? '<div class="card oracion reveal" style="animation-delay:.55s"><div class="oracion-label">Oración de cierre</div><p class="oracion-text">'+esc(data.oracion)+'</p></div>' : '')
+      + '<button class="btn btn-ghost reveal" style="animation-delay:.62s" id="volver">← Buscar otra situación</button>'
       + '</div>');
     app.appendChild(v);
     scrollTop();
 
     v.querySelectorAll("[data-share]").forEach(function(b){ b.onclick=function(){ abrirModal(citas[+b.getAttribute("data-share")]); }; });
     v.querySelectorAll("[data-wa]").forEach(function(b){ b.onclick=function(){ compartirWhatsApp(citas[+b.getAttribute("data-wa")]); }; });
-
-    var iframe=v.querySelector("#miframe"), toggle=v.querySelector("#mtoggle"), on=false;
-    toggle.onclick=function(){
-      on=!on;
-      if (on){ iframe.style.display="block"; iframe.src=srcMusica(tema,true); toggle.textContent="⏸ Pausar"; }
-      else { iframe.src="about:blank"; iframe.style.display="none"; toggle.textContent="▶ Reproducir"; }
-    };
     v.querySelector("#volver").onclick=function(){ renderHome(); };
   }
 
@@ -322,9 +499,9 @@
     var redesHtml=REDES.map(function(r,i){
       return '<button class="red" data-red="'+i+'"><b>'+esc(r.nombre)+'</b><small>'+esc(r.formato)+'</small></button>';
     }).join("");
-    var ov=el('<div class="overlay"><div class="modal"><h3>Compartir esta cita</h3><p>Elegí el formato para tu red social</p>'
+    var ov=el('<div class="overlay"><div class="card modal"><h3>Compartir esta cita</h3><p>Elegí el formato para tu red social</p>'
       + '<div class="redes">'+redesHtml+'</div>'
-      + '<button class="btn btn-ghost" style="margin-top:16px" id="cancelar">Cancelar</button></div></div>');
+      + '<button class="btn btn-ghost" style="margin-top:18px" id="cancelar">Cancelar</button></div></div>');
     modalRoot.appendChild(ov);
     function cerrar(){ modalRoot.innerHTML=""; }
     ov.onclick=function(e){ if(e.target===ov) cerrar(); };
